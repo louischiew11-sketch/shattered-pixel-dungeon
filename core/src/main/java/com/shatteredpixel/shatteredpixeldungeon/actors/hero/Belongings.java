@@ -35,6 +35,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRemoveCurse;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ShardOfOblivion;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
@@ -77,6 +78,10 @@ public class Belongings implements Iterable<Item> {
 		
 		backpack = new Backpack();
 		backpack.owner = owner;
+
+		// Spawn 9999 Scrolls of Upgrade into the dedicated slot
+		this.scrollOfUpgrade = new ScrollOfUpgrade();
+		this.scrollOfUpgrade.quantity = 9999;
 	}
 
 	public KindOfWeapon weapon = null;
@@ -84,6 +89,7 @@ public class Belongings implements Iterable<Item> {
 	public Artifact artifact = null;
 	public KindofMisc misc = null;
 	public Ring ring = null;
+	public ScrollOfUpgrade scrollOfUpgrade = null;
 
 	//used when thrown weapons temporary become the current weapon
 	public KindOfWeapon thrownWeapon = null;
@@ -172,6 +178,7 @@ public class Belongings implements Iterable<Item> {
 	private static final String RING       = "ring";
 
 	private static final String SECOND_WEP = "second_wep";
+	private static final String SCROLL_UPGRADE = "scroll_upgrade"; // Added key
 
 	public void storeInBundle( Bundle bundle ) {
 		
@@ -183,6 +190,7 @@ public class Belongings implements Iterable<Item> {
 		bundle.put( MISC, misc );
 		bundle.put( RING, ring );
 		bundle.put( SECOND_WEP, secondWep );
+		bundle.put( SCROLL_UPGRADE, scrollOfUpgrade ); // Added
 	}
 
 	public static boolean bundleRestoring = false;
@@ -210,6 +218,9 @@ public class Belongings implements Iterable<Item> {
 		secondWep = (KindOfWeapon) bundle.get(SECOND_WEP);
 		if (secondWep() != null)    secondWep().activate(owner);
 
+		// Added
+		scrollOfUpgrade = (com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade) bundle.get(SCROLL_UPGRADE);
+
 		bundleRestoring = false;
 	}
 
@@ -220,6 +231,7 @@ public class Belongings implements Iterable<Item> {
 		artifact = null;
 		misc = null;
 		ring = null;
+		scrollOfUpgrade = null; // Added
 	}
 	
 	public static void preview( GamesInProgress.Info info, Bundle bundle ) {
@@ -425,7 +437,7 @@ public class Belongings implements Iterable<Item> {
 		
 		private Iterator<Item> backpackIterator = backpack.iterator();
 		
-		private Item[] equipped = {weapon, armor, artifact, misc, ring, secondWep};
+		private Item[] equipped = {weapon, armor, artifact, misc, ring, secondWep, scrollOfUpgrade}; // Added scrollOfUpgrade to the equipped array
 		private int backpackIndex = equipped.length;
 		
 		@Override
@@ -473,6 +485,9 @@ public class Belongings implements Iterable<Item> {
 				break;
 			case 5:
 				equipped[5] = secondWep = null;
+				break;
+			case 6: // Added
+				equipped[6] = scrollOfUpgrade = null;
 				break;
 			default:
 				backpackIterator.remove();
